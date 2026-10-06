@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flatland Vision · 二维生物的眼睛</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 data-i18n="title">二维生物的眼睛</h1>
+  <p class="sub" data-i18n="subtitle">一个二维生物只能看到一条线段。它绕着星体走一圈，用线段的明暗变化，在头脑里拼出星体的形状。</p>
+  <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
+</header>
+
+<main>
+  <section class="panel wide">
+    <h2 data-i18n="world">上帝视角：二维膜</h2>
+    <canvas id="world" width="800" height="640"></canvas>
+    <p class="hint" data-i18n="worldHint">拖动太阳改变光向；拖动生物改变位置；自定义形状时在画布上点击添加顶点。</p>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="retina">生物眼中的线段（视网膜）</h2>
+    <div class="label" data-i18n="retinaDepth">只有距离（远处变暗）</div>
+    <canvas id="retina-depth" width="600" height="40"></canvas>
+    <div class="label" data-i18n="retinaLight">只有光照（朗伯反射 + 阴影）</div>
+    <canvas id="retina-light" width="600" height="40"></canvas>
+    <div class="label" data-i18n="retinaBoth">两者叠加（生物实际看到的）</div>
+    <canvas id="retina-both" width="600" height="40"></canvas>
+
+    <h2 data-i18n="signature">绕一圈的变化曲线</h2>
+    <canvas id="signature" width="600" height="200"></canvas>
+    <p class="hint" data-i18n="sigHint">横轴：生物在轨道上的角度。黄线：线段的张角。白线：线段平均亮度。不同形状的星体，曲线的“指纹”不同。</p>
+
+    <h2 data-i18n="mind">头脑里拼出的星体</h2>
+    <canvas id="mind" width="300" height="300"></canvas>
+    <p class="hint" data-i18n="mindHint">生物只知道自己走到了哪里、朝哪个方向看、以及那个方向有多亮。它假设“越暗越远”，把每一点放回去。打开光照后，这个假设会出错，拼出的形状会变形。</p>
+  </section>
+
+  <section class="panel controls">
+    <h2 data-i18n="controls">控制</h2>
+    <label><span data-i18n="shape">星体形状</span>
+      <select id="shape">
+        <option value="circle" data-i18n="circle">圆盘</option>
+        <option value="triangle" data-i18n="triangle">三角形</option>
+        <option value="square" data-i18n="square">正方形</option>
+        <option value="pentagon" data-i18n="pentagon">五边形</option>
+        <option value="star" data-i18n="star">五角星</option>
+        <option value="crescent" data-i18n="crescent">月牙（非凸）</option>
+        <option value="custom" data-i18n="custom">自定义（点击画布）</option>
+      </select></label>
+    <label><span data-i18n="size">星体大小</span><input type="range" id="size" min="40" max="160" value="100"></label>
+    <label><span data-i18n="orbit">轨道半径</span><input type="range" id="orbit" min="150" max="300" value="220"></label>
+    <label><span data-i18n="fov">视场角</span><input type="range" id="fov" min="30" max="180" value="90"></label>
+    <label><span data-i18n="fog">雾的深度（越小远处越暗）</span><input type="range" id="fog" min="100" max="800" value="350"></label>
+    <label><span data-i18n="speed">自动绕行速度</span><input type="range" id="speed" min="0" max="100" value="30"></label>
+    <label><input type="checkbox" id="lightOn" checked> <span data-i18n="lightOn">开启光照</span></label>
+    <label><input type="checkbox" id="assumeDepth" checked> <span data-i18n="assumeDepth">大脑假设：亮度只来自距离</span></label>
+    <button id="clearMind" data-i18n="clearMind">清空头脑里的图</button>
+
+    <h2 data-i18n="fold">膜的对折</h2>
+    <label><input type="checkbox" id="foldOn"> <span data-i18n="foldOn">开启对折</span></label>
+    <label><span data-i18n="foldPos">折线位置</span><input type="range" id="foldPos" min="440" max="760" value="520"></label>
+    <label><span data-i18n="foldAngle">折角（180° 时两层贴合）</span><input type="range" id="foldAngle" min="0" max="180" value="0"></label>
+    <canvas id="side" width="300" height="120"></canvas>
+    <p class="hint" data-i18n="foldHint">只弯不拉伸，膜内的距离不变，生物看不出任何变化。折到 180° 两层贴合后，光可以穿到另一层，生物会在近处看见远处星体的镜像。</p>
+  </section>
+</main>
+
+<footer>
+  <span data-i18n="footer">开源项目 · MIT 许可 · 欢迎加入创作</span>
+  <a href="https://github.com/WalterWood1995/flatland-vision" target="_blank">GitHub</a>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

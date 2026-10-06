@@ -1,0 +1,25 @@
+:root { --bg:#0b0e17; --panel:#141a2a; --fg:#e6e9f0; --muted:#8a93a8; --accent:#ffd23f; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family: system-ui, "Microsoft YaHei", sans-serif; }
+header { padding:18px 24px 8px; position:relative; }
+header h1 { margin:0 0 6px; font-size:26px; }
+header .sub { margin:0; color:var(--muted); max-width:900px; }
+.lang { position:absolute; right:24px; top:20px; }
+.lang button { background:#232b40; color:var(--fg); border:0; padding:6px 10px; margin-left:4px; border-radius:6px; cursor:pointer; }
+main { display:grid; grid-template-columns: minmax(520px, 1.7fr) minmax(320px, 1fr) 300px; gap:16px; padding:12px 24px; }
+.panel { background:var(--panel); border-radius:12px; padding:14px; }
+.panel h2 { font-size:15px; margin:4px 0 8px; color:var(--accent); }
+canvas { display:block; max-width:100%; background:#070a14; border-radius:6px; }
+#retina-depth, #retina-light, #retina-both { margin-bottom:10px; width:100%; }
+#signature, #mind { width:100%; margin-bottom:6px; }
+#mind { width:300px; }
+.label { font-size:12px; color:var(--muted); margin:6px 0 3px; }
+.hint { font-size:12px; color:var(--muted); line-height:1.5; }
+.controls label { display:block; font-size:13px; margin:8px 0; }
+.controls input[type=range] { width:100%; }
+.controls select { width:100%; background:#232b40; color:var(--fg); border:0; padding:6px; border-radius:6px; }
+.controls button { background:#232b40; color:var(--fg); border:0; padding:8px 12px; border-radius:6px; cursor:pointer; width:100%; margin-top:6px; }
+#side { width:100%; margin-top:8px; }
+footer { padding:12px 24px 24px; color:var(--muted); font-size:13px; }
+footer a { color:var(--accent); margin-left:10px; }
+@media (max-width:1100px) { main { grid-template-columns:1fr; } }
