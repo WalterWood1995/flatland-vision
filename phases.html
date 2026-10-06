@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flatland · 二维世界的月相</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+  <h1 data-i18n="title">二维世界的月相</h1>
+  <p class="sub" data-i18n="subtitle">卫星绕着行星转，太阳从远处照过来。站在行星上的生物，眼里的卫星是一条线段，被照亮的部分从一端长到另一端，再缩回去。二维里没有弯弯的月牙，只有亮段的长短。</p>
+  <nav class="nav"></nav>
+  <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
+</header>
+<main>
+  <section class="panel wide"><h2 data-i18n="world">上帝视角</h2><canvas id="world" width="800" height="640"></canvas>
+    <p class="hint" data-i18n="worldHint">拖动绿色生物可以沿行星表面移动。卫星白色的一侧朝向太阳。</p></section>
+  <section class="panel">
+    <h2 data-i18n="retina">生物眼中的卫星（放大）</h2><canvas id="retina" width="600" height="48"></canvas>
+    <div id="status" class="status"></div>
+    <h2 data-i18n="curve">亮段占比随相位的变化</h2><canvas id="curve" width="600" height="200"></canvas>
+    <p class="hint" data-i18n="curveHint">纵轴：卫星线段里被照亮的比例。0 是“新月”，1 是“满月”。曲线不是正弦，因为二维里亮段的边界是一个点，不是一条弧。</p>
+    <h2 data-i18n="strip">一个周期里的八个相位</h2><canvas id="strip" width="600" height="60"></canvas>
+  </section>
+  <section class="panel controls"><h2 data-i18n="controls">控制</h2>
+    <label><span data-i18n="moonDist">卫星轨道半径</span><input type="range" id="moonDist" min="150" max="300" value="220"></label>
+    <label><span data-i18n="moonSize">卫星大小</span><input type="range" id="moonSize" min="10" max="50" value="28"></label>
+    <label><span data-i18n="sunAngle">太阳方向</span><input type="range" id="sunAngle" min="0" max="360" value="180"></label>
+    <label><span data-i18n="speed">公转速度</span><input type="range" id="speed" min="0" max="100" value="25"></label>
+    <label><input type="checkbox" id="track" checked> <span data-i18n="track">生物始终望向卫星</span></label>
+    <h2 data-i18n="notes">二维世界里的不同</h2>
+    <p class="hint" data-i18n="notes1">三维的月相是圆盘上一条明暗交界的弧，因为月球是球，照亮的是半个球面。二维的卫星是圆盘，照亮的是半个圆周，生物看到的是一条线段，亮段和暗段之间只有一个分界点。</p>
+    <p class="hint" data-i18n="notes2">“新月”时卫星在太阳和行星之间，正好也是日食的位置。二维里月相和食是同一件事的两个侧面。</p>
+  </section>
+</main>
+<footer><span data-i18n="footer">开源项目 · MIT 许可 · 欢迎加入创作</span><a href="https://github.com/WalterWood1995/flatland-vision" target="_blank">GitHub</a></footer>
+<script src="common.js"></script><script src="phases.js"></script>
+</body></html>

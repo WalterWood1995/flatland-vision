@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flatland · 二维世界的双星</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+  <h1 data-i18n="title">二维世界的双星</h1>
+  <p class="sub" data-i18n="subtitle">两颗恒星绕着共同的质心转。远处的生物看它们，是两段亮线时而分开、时而合并。合并的时候，一颗挡住另一颗，总亮度下降。二维里每一对双星都是食双星。</p>
+  <nav class="nav"></nav>
+  <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
+</header>
+<main>
+  <section class="panel wide"><h2 data-i18n="world">上帝视角</h2><canvas id="world" width="800" height="640"></canvas>
+    <p class="hint" data-i18n="worldHint">拖动绿色生物改变观察方向。叉号是质心。</p></section>
+  <section class="panel">
+    <h2 data-i18n="retina">生物眼中的双星（放大）</h2><canvas id="retina" width="600" height="48"></canvas>
+    <div id="status" class="status"></div>
+    <h2 data-i18n="curve">光变曲线</h2><canvas id="curve" width="600" height="220"></canvas>
+    <p class="hint" data-i18n="curveHint">纵轴：生物收到的总亮度。一个周期里有两次下陷：亮星被挡是主食，暗星被挡是次食。两次下陷的深度不同。</p>
+    <h2 data-i18n="sep">两段亮线的间距</h2><canvas id="sepc" width="600" height="100"></canvas>
+  </section>
+  <section class="panel controls"><h2 data-i18n="controls">控制</h2>
+    <label><span data-i18n="q">质量比 m2 / m1</span><input type="range" id="q" min="0.1" max="1" step="0.05" value="0.5"></label>
+    <label><span data-i18n="sepr">两星间距</span><input type="range" id="sepr" min="60" max="220" value="140"></label>
+    <label><span data-i18n="s1">主星半径</span><input type="range" id="s1" min="8" max="40" value="26"></label>
+    <label><span data-i18n="s2">伴星半径</span><input type="range" id="s2" min="6" max="40" value="16"></label>
+    <label><span data-i18n="b2">伴星表面亮度（主星为 1）</span><input type="range" id="b2" min="0.05" max="1" step="0.05" value="0.35"></label>
+    <label><span data-i18n="speed">公转速度</span><input type="range" id="speed" min="0" max="100" value="25"></label>
+    <h2 data-i18n="notes">二维世界里的不同</h2>
+    <p class="hint" data-i18n="notes1">三维里只有轨道面几乎对着我们的双星才会互相遮挡，所以食双星是少数。二维里轨道和视线在同一张膜上，每一对双星每转一圈必定互相遮挡两次。</p>
+    <p class="hint" data-i18n="notes2">两颗星绕质心转，质量大的离质心近、转得慢。拖动质量比，可以看到质心往哪边挪。</p>
+  </section>
+</main>
+<footer><span data-i18n="footer">开源项目 · MIT 许可 · 欢迎加入创作</span><a href="https://github.com/WalterWood1995/flatland-vision" target="_blank">GitHub</a></footer>
+<script src="common.js"></script><script src="binary.js"></script>
+</body></html>

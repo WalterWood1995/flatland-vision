@@ -12,6 +12,9 @@
 |---|---|---|
 | 看星体 | 绕着星体走一圈，拼出它的形状 | https://walterwood1995.github.io/flatland-vision/ |
 | 日食与月食 | 一颗卫星绕着行星转，站在行星表面看日食和月食 | https://walterwood1995.github.io/flatland-vision/eclipse.html |
+| 月相 | 卫星的亮段从一端长到另一端，二维里没有月牙 | https://walterwood1995.github.io/flatland-vision/phases.html |
+| 行星逆行 | 站在内行星上看外行星在背景恒星间倒退 | https://walterwood1995.github.io/flatland-vision/retrograde.html |
+| 双星 | 两颗恒星绕质心转，二维里每一对都是食双星 | https://walterwood1995.github.io/flatland-vision/binary.html |
 
 ![screenshot](docs/screenshot.jpg)
 
@@ -51,7 +54,7 @@ python -m http.server 8000
 - [ ] 膜上的"坑"：星体压弯膜，光线沿测地线走，看引力透镜在二维生物眼里是什么样。
 - [ ] 口袋与窗：膜上陷出一个口袋，口袋底部与另一张膜相切，光从那里穿过去。
 - [ ] 两张膜相交：交线在二维生物眼里是一条发光的缝。
-- [ ] 双星、行星凌日、卫星的相位（二维的"月相"）。
+- [ ] 昼夜与四季、潮汐、卫星凌日、行星环、彗星、视差、大气折射。
 - [ ] 升到三维：三维生物的视网膜是一个平面，看四维物体穿过三维空间。
 - [ ] 生物的"大脑"换成真正的推断算法：从一圈的亮度序列反推形状（这是一个反问题）。
 - [ ] 移动端触控支持。
@@ -79,6 +82,9 @@ Each phenomenon is its own small page, linked together:
 |---|---|---|
 | Seeing a planet | Walk around a planet and reconstruct its shape | https://walterwood1995.github.io/flatland-vision/ |
 | Eclipses | A moon orbits the planet; watch solar and lunar eclipses from the surface | https://walterwood1995.github.io/flatland-vision/eclipse.html |
+| Moon phases | The lit part of the moon grows end to end; no crescents in 2D | https://walterwood1995.github.io/flatland-vision/phases.html |
+| Retrograde | Watch the outer planet slide backwards among the stars | https://walterwood1995.github.io/flatland-vision/retrograde.html |
+| Binary stars | Two stars orbit their barycentre; every 2D binary eclipses | https://walterwood1995.github.io/flatland-vision/binary.html |
 
 ### Features
 

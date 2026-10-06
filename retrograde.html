@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flatland · 二维世界的行星逆行</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header>
+  <h1 data-i18n="title">二维世界的行星逆行</h1>
+  <p class="sub" data-i18n="subtitle">两颗行星绕着太阳转，里面那颗转得快。站在里面那颗上的生物，看外面那颗在背景恒星之间移动。追上并超过的时候，外面那颗在天上倒退。</p>
+  <nav class="nav"></nav>
+  <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
+</header>
+<main>
+  <section class="panel wide"><h2 data-i18n="world">上帝视角</h2><canvas id="world" width="800" height="640"></canvas>
+    <p class="hint" data-i18n="worldHint">绿色是生物所在的行星，橙色是被观察的行星。虚线是视线，外圈的小点是远处的背景恒星。</p></section>
+  <section class="panel">
+    <h2 data-i18n="retina">生物眼中的天空（展开成一圈）</h2><canvas id="sky" width="600" height="60"></canvas>
+    <div id="status" class="status"></div>
+    <h2 data-i18n="curve">行星在天上的位置随时间的变化</h2><canvas id="curve" width="600" height="220"></canvas>
+    <p class="hint" data-i18n="curveHint">纵轴：行星相对背景恒星的角位置。曲线往回走的那一段就是逆行。红色标出逆行期。</p>
+    <h2 data-i18n="trail">在天上画出的轨迹</h2><canvas id="trail" width="600" height="60"></canvas>
+    <p class="hint" data-i18n="trailHint">把最近一段时间行星在天上的位置连起来。三维里是一个环套，二维里只能来回折一下。</p>
+  </section>
+  <section class="panel controls"><h2 data-i18n="controls">控制</h2>
+    <label><span data-i18n="r1">内行星轨道半径</span><input type="range" id="r1" min="60" max="200" value="110"></label>
+    <label><span data-i18n="r2">外行星轨道半径</span><input type="range" id="r2" min="120" max="300" value="200"></label>
+    <label><span data-i18n="speed">时间流速</span><input type="range" id="speed" min="0" max="100" value="30"></label>
+    <label><input type="checkbox" id="swap"> <span data-i18n="swap">改为站在外行星上观察内行星</span></label>
+    <button id="clear" data-i18n="clear">清空曲线</button>
+    <h2 data-i18n="notes">二维世界里的不同</h2>
+    <p class="hint" data-i18n="notes1">两颗行星的周期按开普勒第三定律设定：周期与轨道半径的 1.5 次方成正比。这一点在二维膜上仍然成立，因为它只依赖圆轨道上的力平衡。</p>
+    <p class="hint" data-i18n="notes2">三维里逆行时行星在天上画出一个小环，因为两条轨道面有夹角。二维里所有轨道在同一张膜上，逆行只是在一条线上倒退一段，更干净，也更容易看出它只是视角效应。</p>
+  </section>
+</main>
+<footer><span data-i18n="footer">开源项目 · MIT 许可 · 欢迎加入创作</span><a href="https://github.com/WalterWood1995/flatland-vision" target="_blank">GitHub</a></footer>
+<script src="common.js"></script><script src="retrograde.js"></script>
+</body></html>

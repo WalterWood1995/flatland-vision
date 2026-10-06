@@ -33,11 +33,11 @@ const I18N = {
   }
 };
 let lang = "zh";
-function applyLang() {
+function applyLang() { window.FL.lang = lang; window.FL.applyLang(I18N); return;
   document.querySelectorAll("[data-i18n]").forEach(el => { const k = el.dataset.i18n; if (I18N[lang][k]) el.textContent = I18N[lang][k]; });
   document.documentElement.lang = lang;
 }
-const T = k => I18N[lang][k];
+const T = k => I18N[window.FL.lang][k];
 
 // ---------- DOM ----------
 const $ = id => document.getElementById(id);
@@ -238,7 +238,7 @@ $("lightOn").addEventListener("change", e => { state.lightOn = e.target.checked;
 $("assumeDepth").addEventListener("change", e => { state.assumeDepth = e.target.checked; resetMind(); });
 $("clearMind").addEventListener("click", resetMind);
 function resetMind() { state.mind = []; state.signature = new Array(360).fill(null); }
-$("btn-zh").onclick = () => { lang = "zh"; applyLang(); }; $("btn-en").onclick = () => { lang = "en"; applyLang(); };
+
 
 // mouse interaction on world canvas
 let drag = null;
@@ -253,5 +253,5 @@ window.addEventListener("mousemove", e => { if (!drag) return; const p = pos(e);
 window.addEventListener("mouseup", () => { if (drag === "creature") state.autoWalk = state.speed > 0; drag = null; });
 W.addEventListener("dblclick", () => { if (state.shape === "custom") { state.custom = []; resetMind(); } });
 
-applyLang(); requestAnimationFrame(frame);
+window.FL.setupLang(I18N); applyLang(); requestAnimationFrame(frame);
 })();

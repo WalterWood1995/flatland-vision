@@ -29,8 +29,8 @@ const I18N = {
     stSolarTotal: "Total solar eclipse: the sun is fully covered", stSolarPartial: "Partial solar eclipse: {p}% of the sun covered", stLunarTotal: "Total lunar eclipse: moon fully in the umbra", stLunarPartial: "Partial lunar eclipse: moon partly in the umbra", stPenumbra: "Penumbral eclipse: moon slightly dimmed", stNight: "Night: sun below the horizon", stNone: "An ordinary day",
     sunLabel: "sunlight", moonLabel: "moon", creature: "creature", umbra: "umbra", penumbra: "penumbra" }
 };
-let lang = "zh"; const T = k => I18N[lang][k];
-function applyLang() { document.querySelectorAll("[data-i18n]").forEach(el => { const k = el.dataset.i18n; if (I18N[lang][k]) el.textContent = I18N[lang][k]; }); document.documentElement.lang = lang; }
+let lang = "zh"; const T = k => I18N[window.FL.lang][k];
+function applyLang() { window.FL.lang = lang; window.FL.applyLang(I18N); return; document.querySelectorAll("[data-i18n]").forEach(el => { const k = el.dataset.i18n; if (I18N[lang][k]) el.textContent = I18N[lang][k]; }); document.documentElement.lang = lang; }
 
 const $ = id => document.getElementById(id);
 const W = $("world"), wc = W.getContext("2d"); const RT = $("retina"), rc = RT.getContext("2d");
@@ -160,11 +160,11 @@ $("goSolar").onclick = () => { state.obs = state.sunAngle * Math.PI / 180; state
   jumpTo(() => { const o = obsPos(); return sunVisible(o.x, o.y, false) < sunVisible(o.x, o.y, true) - 0.1; }); };
 $("goLunar").onclick = () => { state.obs = state.sunAngle * Math.PI / 180 + Math.PI; state.lockSun = false; $("lockSun").checked = false; // stand at midnight, face the sky
   jumpTo(() => moonLight() < 0.5); };
-$("btn-zh").onclick = () => { lang = "zh"; applyLang(); }; $("btn-en").onclick = () => { lang = "en"; applyLang(); };
+
 let drag = false; const pos = e => { const r = W.getBoundingClientRect(); return { x: (e.clientX - r.left) * W.width / r.width, y: (e.clientY - r.top) * W.height / r.height }; };
 W.addEventListener("mousedown", e => { const p = pos(e), o = obsPos(); if (Math.hypot(p.x - o.x, p.y - o.y) < 18) drag = true; });
 window.addEventListener("mousemove", e => { if (!drag) return; const p = pos(e); state.obs = Math.atan2(p.y - state.center.y, p.x - state.center.x); });
 window.addEventListener("mouseup", () => drag = false);
 window.__eclipse = state;
-applyLang(); requestAnimationFrame(frame);
+window.FL.setupLang(I18N); applyLang(); requestAnimationFrame(frame);
 })();
