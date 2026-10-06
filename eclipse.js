@@ -36,7 +36,7 @@ const $ = id => document.getElementById(id);
 const W = $("world"), wc = W.getContext("2d"); const RT = $("retina"), rc = RT.getContext("2d");
 const CV = $("curves"), cc = CV.getContext("2d"); const SK = $("sky"), skc = SK.getContext("2d");
 
-const state = { moonDist: 210, moonSize: 24, sunSize: 4, sunAngle: 180, speed: 25, fov: 120, lockSun: true, paused: false,
+const state = { texture: "craters", spin: 12, rot: 0, moonDist: 210, moonSize: 24, sunSize: 4, sunAngle: 180, speed: 25, fov: 120, lockSun: true, paused: false,
   phase: 0.3, obs: Math.PI, center: { x: 400, y: 330 }, R: 70, sunDist: 100000, curves: new Array(360).fill(null) };
 const N = 300;
 
@@ -75,7 +75,8 @@ function sampleView() {
   for (let i = 0; i < N; i++) { const a = facing - fov / 2 + fov * (i + 0.5) / N; const dx = Math.cos(a), dy = Math.sin(a);
     if (dx * o.nx + dy * o.ny < 0) { out.push({ kind: "ground" }); continue; }
     const tm = rayCircle(o.x, o.y, dx, dy, m.x, m.y, state.moonSize);
-    if (tm) { out.push({ kind: "moon", v: 0.08 + 0.72 * ml }); continue; }
+    if (tm) { const px = o.x + dx * tm, py = o.y + dy * tm; const alb = window.FL.albedo(state.texture, (Math.atan2(py - m.y, px - m.x) - state.rot) / (2 * Math.PI));
+      const v = 0.08 + 0.72 * ml; out.push({ kind: "moon", v, rgb: alb.map(c => c * v) }); continue; }
     let da = Math.atan2(Math.sin(a - sunA), Math.cos(a - sunA));
     if (Math.abs(da) <= Math.max(half, 0.004)) { out.push({ kind: "sun" }); continue; }
     out.push({ kind: "sky" });
@@ -107,7 +108,7 @@ function drawWorld(V) {
   const sa = Math.atan2(S.y, S.x); wc.strokeStyle = "#cfd6e6"; wc.lineWidth = 4; wc.beginPath(); wc.arc(c.x, c.y, state.R, sa - Math.PI / 2, sa + Math.PI / 2); wc.stroke(); wc.lineWidth = 1;
   // moon with lit side
   const ml = V.ml; wc.fillStyle = `rgb(${Math.round(40 + 120 * ml)},${Math.round(44 + 120 * ml)},${Math.round(60 + 110 * ml)})`; wc.beginPath(); wc.arc(m.x, m.y, state.moonSize, 0, 7); wc.fill();
-  if (ml > 0) { wc.strokeStyle = `rgba(230,233,240,${0.3 + 0.7 * ml})`; wc.lineWidth = 3; wc.beginPath(); wc.arc(m.x, m.y, state.moonSize, sa - Math.PI / 2, sa + Math.PI / 2); wc.stroke(); wc.lineWidth = 1; }
+  window.FL.texturedRim(wc, m.x, m.y, state.moonSize, state.texture, state.rot, a => ml * Math.max(0, Math.cos(a) * S.x + Math.sin(a) * S.y), 4);
   if (ml < 0.02) { wc.strokeStyle = "#ff6b6b"; wc.beginPath(); wc.arc(m.x, m.y, state.moonSize + 3, 0, 7); wc.stroke(); }
   wc.fillStyle = "#e6e9f0"; wc.fillText(T("moonLabel"), m.x + state.moonSize + 4, m.y + 4);
   // creature and its view wedge
@@ -117,14 +118,15 @@ function drawWorld(V) {
 }
 function drawRetina(V) {
   const w = RT.width, h = RT.height; rc.fillStyle = "#070a14"; rc.fillRect(0, 0, w, h); const cw = w / N;
-  V.out.forEach((s, i) => { let col = "#0b1020"; if (s.kind === "sun") col = "#fff3a0"; else if (s.kind === "moon") { const v = Math.round(255 * s.v); col = s.v < 0.15 ? `rgb(${v + 40},${v},${v})` : `rgb(${v},${v},${v})`; } else if (s.kind === "ground") col = "#2a2318";
+  V.out.forEach((s, i) => { let col = "#0b1020"; if (s.kind === "sun") col = "#fff3a0"; else if (s.kind === "moon") { col = s.v < 0.15 ? `rgb(${Math.round(255 * s.rgb[0]) + 40},${Math.round(255 * s.rgb[1])},${Math.round(255 * s.rgb[2])})` : window.FL.rgb(s.rgb, 1); } else if (s.kind === "ground") col = "#2a2318";
     rc.fillStyle = col; rc.fillRect(i * cw, 0, Math.ceil(cw), h); });
 }
 function drawSky(V) {
   const w = SK.width, h = SK.height; skc.fillStyle = "#070a14"; skc.fillRect(0, 0, w, h);
   const o = V.o, S = sunDir(), m = V.m; const up = Math.atan2(o.ny, o.nx); const half = state.sunSize * Math.PI / 360;
   for (let i = 0; i < w; i++) { const a = up - Math.PI / 2 + Math.PI * (i + 0.5) / w; const dx = Math.cos(a), dy = Math.sin(a); let col = "#0b1020";
-    if (rayCircle(o.x, o.y, dx, dy, m.x, m.y, state.moonSize)) { const v = Math.round(255 * (0.08 + 0.72 * V.ml)); col = `rgb(${v},${v},${v})`; }
+    const tmm = rayCircle(o.x, o.y, dx, dy, m.x, m.y, state.moonSize);
+    if (tmm) { const px = o.x + dx * tmm, py = o.y + dy * tmm; const alb = window.FL.albedo(state.texture, (Math.atan2(py - m.y, px - m.x) - state.rot) / (2 * Math.PI)); col = window.FL.rgb(alb, 0.08 + 0.72 * V.ml); }
     else { const da = Math.atan2(Math.sin(a - Math.atan2(S.y, S.x)), Math.cos(a - Math.atan2(S.y, S.x))); if (Math.abs(da) <= Math.max(half, 0.004)) col = "#fff3a0"; }
     skc.fillStyle = col; skc.fillRect(i, 0, 1, h); }
   skc.fillStyle = "#8a93a8"; skc.font = "10px sans-serif"; skc.fillText("↑", w / 2 - 3, h - 4);
@@ -147,12 +149,13 @@ function drawCurves(st) {
 // ---------- loop ----------
 let last = performance.now();
 function frame(now) { const dt = Math.min((now - last) / 1000, 0.05); last = now;
-  if (!state.paused) state.phase += dt * state.speed / 100 * 0.08;
+  if (!state.paused) { state.phase += dt * state.speed / 100 * 0.08; state.rot += dt * state.spin * Math.PI / 180; }
   const V = sampleView(); drawWorld(V); drawRetina(V); drawSky(V); drawCurves(status(V)); requestAnimationFrame(frame); }
 
 // ---------- UI ----------
 const bind = (id, key) => { $(id).addEventListener("input", e => { state[key] = +e.target.value; state.curves = new Array(360).fill(null); }); };
-["moonDist", "moonSize", "sunSize", "sunAngle", "speed", "fov"].forEach(k => bind(k, k));
+["moonDist", "moonSize", "sunSize", "sunAngle", "speed", "fov", "spin"].forEach(k => bind(k, k));
+window.FL.fillTextureSelect($("texture")); $("texture").value = state.texture; $("texture").addEventListener("input", e => state.texture = e.target.value);
 $("lockSun").addEventListener("change", e => state.lockSun = e.target.checked);
 $("pause").onclick = () => state.paused = !state.paused;
 function jumpTo(test) { const start = state.phase; for (let k = 1; k <= 720; k++) { state.phase = start + k / 720; if (test()) return; } state.phase = start; }

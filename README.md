@@ -26,6 +26,7 @@
 - 三条视网膜：只有距离、只有光照、两者叠加。
 - 绕一圈的变化曲线：线段张角和平均亮度随轨道角度的变化，每种形状有自己的指纹。
 - 头脑里拼出的星体：生物假设"越暗越远"做反推。打开光照后这个假设出错，拼出的形状会变形。这正是二维生物认识世界时的真实困境。
+- 卫星也有纹路和自转：环形山、大陆、条纹、宽窄带、斑点、杂色，在日食页和月相页里都能选。
 - 日食与月食（独立程序）：本影是楔形而不是圆锥；太阳角直径决定半影宽度；二维里卫星每转一圈必定发生一次日食和一次月食；光变曲线显示两种食的下陷。
 
 ## 本地运行
@@ -95,6 +96,7 @@ Each phenomenon is its own small page, linked together:
 - Three retinas: depth only, lighting only, both.
 - Signature plot over one orbit: angular width and mean brightness vs orbital angle.
 - Mental reconstruction assuming "darker = farther"; see it warp when lighting is on.
+- Moons have textures and spin too (craters, continents, stripes, bands, spots, mottled) on the eclipse and phases pages.
 - Eclipses (separate page): wedge-shaped umbra instead of a cone; sun angular size sets the penumbra; in 2D every orbit brings one solar and one lunar eclipse; light curves show both dips.
 
 ### Run locally

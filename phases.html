@@ -20,6 +20,8 @@
     <h2 data-i18n="strip">一个周期里的八个相位</h2><canvas id="strip" width="600" height="60"></canvas>
   </section>
   <section class="panel controls"><h2 data-i18n="controls">控制</h2>
+    <label><span data-textext="texture">卫星纹路</span><select id="texture"></select></label>
+    <label><span data-textext="spin">卫星自转</span><input type="range" id="spin" min="0" max="60" value="12"></label>
     <label><span data-i18n="moonDist">卫星轨道半径</span><input type="range" id="moonDist" min="150" max="300" value="220"></label>
     <label><span data-i18n="moonSize">卫星大小</span><input type="range" id="moonSize" min="10" max="50" value="28"></label>
     <label><span data-i18n="sunAngle">太阳方向</span><input type="range" id="sunAngle" min="0" max="360" value="180"></label>
