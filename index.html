@@ -10,6 +10,7 @@
 <header>
   <h1 data-i18n="title">二维生物的眼睛</h1>
   <p class="sub" data-i18n="subtitle">一个二维生物只能看到一条线段。它绕着星体走一圈，用线段的明暗变化，在头脑里拼出星体的形状。</p>
+  <nav class="nav"><a href="index.html" class="active" data-i18n="navVision">看星体</a><a href="eclipse.html" data-i18n="navEclipse">日食与月食</a></nav>
   <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
 </header>
 
@@ -47,7 +48,13 @@
         <option value="square" data-i18n="square">正方形</option>
         <option value="pentagon" data-i18n="pentagon">五边形</option>
         <option value="star" data-i18n="star">五角星</option>
+        <option value="hexagon" data-i18n="hexagon">六边形</option>
+        <option value="ellipse" data-i18n="ellipse">椭圆</option>
+        <option value="egg" data-i18n="egg">蛋形</option>
+        <option value="rounded" data-i18n="rounded">圆角方形</option>
         <option value="crescent" data-i18n="crescent">月牙（非凸）</option>
+        <option value="gear" data-i18n="gear">齿轮（非凸）</option>
+        <option value="asteroid" data-i18n="asteroid">小行星（随机）</option>
         <option value="custom" data-i18n="custom">自定义（点击画布）</option>
       </select></label>
     <label><span data-i18n="size">星体大小</span><input type="range" id="size" min="40" max="160" value="100"></label>
@@ -59,12 +66,6 @@
     <label><input type="checkbox" id="assumeDepth" checked> <span data-i18n="assumeDepth">大脑假设：亮度只来自距离</span></label>
     <button id="clearMind" data-i18n="clearMind">清空头脑里的图</button>
 
-    <h2 data-i18n="fold">膜的对折</h2>
-    <label><input type="checkbox" id="foldOn"> <span data-i18n="foldOn">开启对折</span></label>
-    <label><span data-i18n="foldPos">折线位置</span><input type="range" id="foldPos" min="440" max="760" value="520"></label>
-    <label><span data-i18n="foldAngle">折角（180° 时两层贴合）</span><input type="range" id="foldAngle" min="0" max="180" value="0"></label>
-    <canvas id="side" width="300" height="120"></canvas>
-    <p class="hint" data-i18n="foldHint">只弯不拉伸，膜内的距离不变，生物看不出任何变化。折到 180° 两层贴合后，光可以穿到另一层，生物会在近处看见远处星体的镜像。</p>
   </section>
 </main>
 

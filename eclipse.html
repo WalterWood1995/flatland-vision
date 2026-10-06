@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flatland Eclipse · 二维世界的日食与月食</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 data-i18n="title">二维世界的日食与月食</h1>
+  <p class="sub" data-i18n="subtitle">一颗二维行星，一颗二维卫星，一个远处的太阳。站在行星表面的二维生物，眼里只有一条线段。卫星挡住太阳，是日食；卫星走进行星的影子，是月食。</p>
+  <nav class="nav"><a href="index.html" data-i18n="navVision">看星体</a><a href="eclipse.html" class="active" data-i18n="navEclipse">日食与月食</a></nav>
+  <div class="lang"><button id="btn-zh">中文</button><button id="btn-en">EN</button></div>
+</header>
+
+<main>
+  <section class="panel wide">
+    <h2 data-i18n="world">上帝视角</h2>
+    <canvas id="world" width="800" height="640"></canvas>
+    <p class="hint" data-i18n="worldHint">拖动绿色生物可以沿行星表面移动。深色扇形是本影，浅色扇形是半影。</p>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="retina">生物眼中的线段</h2>
+    <canvas id="retina" width="600" height="48"></canvas>
+    <div class="legend"><span class="sw sun"></span><span data-i18n="lgSun">太阳</span> <span class="sw moon"></span><span data-i18n="lgMoon">卫星（被照亮）</span> <span class="sw dark"></span><span data-i18n="lgDark">卫星（在影子里）</span> <span class="sw ground"></span><span data-i18n="lgGround">地平线以下</span></div>
+    <div id="status" class="status"></div>
+
+    <h2 data-i18n="curves">光变曲线</h2>
+    <canvas id="curves" width="600" height="220"></canvas>
+    <p class="hint" data-i18n="curvesHint">黄线：生物收到的太阳光。白线：卫星的亮度。日食时黄线下陷，月食时白线下陷。横轴是卫星公转的相位。</p>
+
+    <h2 data-i18n="sky">生物眼中的“天空”（展开成一圈）</h2>
+    <canvas id="sky" width="600" height="60"></canvas>
+    <p class="hint" data-i18n="skyHint">把生物能看到的全部方向展开成一条线。中间是头顶，两端是地平线。</p>
+  </section>
+
+  <section class="panel controls">
+    <h2 data-i18n="controls">控制</h2>
+    <label><span data-i18n="moonDist">卫星轨道半径</span><input type="range" id="moonDist" min="150" max="300" value="210"></label>
+    <label><span data-i18n="moonSize">卫星大小</span><input type="range" id="moonSize" min="8" max="50" value="24"></label>
+    <label><span data-i18n="sunSize">太阳角直径（决定半影宽度）</span><input type="range" id="sunSize" min="0" max="12" value="4" step="0.5"></label>
+    <label><span data-i18n="sunAngle">太阳方向</span><input type="range" id="sunAngle" min="0" max="360" value="180"></label>
+    <label><span data-i18n="speed">卫星公转速度</span><input type="range" id="speed" min="0" max="100" value="25"></label>
+    <label><span data-i18n="fov">视场角</span><input type="range" id="fov" min="30" max="180" value="120"></label>
+    <label><input type="checkbox" id="lockSun" checked> <span data-i18n="lockSun">生物始终望向太阳</span></label>
+    <button id="goSolar" data-i18n="goSolar">跳到下一次日食</button>
+    <button id="goLunar" data-i18n="goLunar">跳到下一次月食</button>
+    <button id="pause" data-i18n="pause">暂停 / 继续</button>
+
+    <h2 data-i18n="notes">二维世界里的不同</h2>
+    <p class="hint" data-i18n="notes1">在三维里，月亮的轨道面和地球绕太阳的轨道面有一个夹角，所以不是每个月都有日食。在二维里，所有东西都在同一张膜上，卫星每转一圈必定挡一次太阳、进一次影子。日食和月食在二维世界里是家常便饭。</p>
+    <p class="hint" data-i18n="notes2">本影在三维里是一个圆锥，在二维里是一个楔形。太阳越大，半影越宽，影子的边缘越模糊。把太阳角直径调到零，影子就有了锋利的边。</p>
+  </section>
+</main>
+
+<footer>
+  <span data-i18n="footer">开源项目 · MIT 许可 · 欢迎加入创作</span>
+  <a href="https://github.com/WalterWood1995/flatland-vision" target="_blank">GitHub</a>
+</footer>
+<script src="eclipse.js"></script>
+</body>
+</html>
