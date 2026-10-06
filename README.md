@@ -21,6 +21,7 @@
 ## 能做什么
 
 - 星体形状：圆盘、三角形、正方形、五边形、六边形、五角星、椭圆、蛋形、圆角方形、非凸的月牙和齿轮、随机的小行星，或者点击画布自定义。
+- 星体表面纹路：大陆与海洋、条纹、宽窄带、斑点、杂色。纹路沿着轮廓分布，星体可以自转，生物看到的线段上会出现花纹，拼图时可以用花纹对位。
 - 拖动太阳改变光向，看朗伯反射和阴影如何改变线段。
 - 三条视网膜：只有距离、只有光照、两者叠加。
 - 绕一圈的变化曲线：线段张角和平均亮度随轨道角度的变化，每种形状有自己的指纹。
@@ -89,6 +90,7 @@ Each phenomenon is its own small page, linked together:
 ### Features
 
 - Planet shapes: disk, triangle, square, pentagon, hexagon, star, ellipse, egg, rounded square, non-convex crescent and gear, random asteroid, or custom by clicking.
+- Surface textures: continents and seas, stripes, bands, spots, mottled. The texture runs along the rim, the planet can spin, and the creature sees the pattern on its segment.
 - Drag the sun; Lambert shading with shadows.
 - Three retinas: depth only, lighting only, both.
 - Signature plot over one orbit: angular width and mean brightness vs orbital angle.

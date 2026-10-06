@@ -27,7 +27,7 @@
     <canvas id="retina-depth" width="600" height="40"></canvas>
     <div class="label" data-i18n="retinaLight">只有光照（朗伯反射 + 阴影）</div>
     <canvas id="retina-light" width="600" height="40"></canvas>
-    <div class="label" data-i18n="retinaBoth">两者叠加（生物实际看到的）</div>
+    <div class="label" data-i18n="retinaBoth">两者叠加 + 纹路（生物实际看到的）</div>
     <canvas id="retina-both" width="600" height="40"></canvas>
 
     <h2 data-i18n="signature">绕一圈的变化曲线</h2>
@@ -57,6 +57,16 @@
         <option value="asteroid" data-i18n="asteroid">小行星（随机）</option>
         <option value="custom" data-i18n="custom">自定义（点击画布）</option>
       </select></label>
+    <label><span data-i18n="texture">表面纹路</span>
+      <select id="texture">
+        <option value="continents" data-i18n="texContinents">大陆与海洋</option>
+        <option value="stripes" data-i18n="texStripes">条纹</option>
+        <option value="bands" data-i18n="texBands">宽窄带</option>
+        <option value="spots" data-i18n="texSpots">斑点</option>
+        <option value="noise" data-i18n="texNoise">杂色</option>
+        <option value="none" data-i18n="texNone">无</option>
+      </select></label>
+    <label><span data-i18n="spin">星体自转</span><input type="range" id="spin" min="0" max="60" value="10"></label>
     <label><span data-i18n="size">星体大小</span><input type="range" id="size" min="40" max="160" value="100"></label>
     <label><span data-i18n="orbit">轨道半径</span><input type="range" id="orbit" min="150" max="300" value="220"></label>
     <label><span data-i18n="fov">视场角</span><input type="range" id="fov" min="30" max="180" value="90"></label>

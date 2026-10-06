@@ -12,7 +12,7 @@ const I18N = {
     retina: "生物眼中的线段（视网膜）", retinaDepth: "只有距离（远处变暗）", retinaLight: "只有光照（朗伯反射 + 阴影）", retinaBoth: "两者叠加（生物实际看到的）",
     signature: "绕一圈的变化曲线", sigHint: "横轴：生物在轨道上的角度。黄线：线段的张角。白线：线段平均亮度。不同形状的星体，曲线的“指纹”不同。",
     mind: "头脑里拼出的星体", mindHint: "生物只知道自己走到了哪里、朝哪个方向看、以及那个方向有多亮。它假设“越暗越远”，把每一点放回去。打开光照后，这个假设会出错，拼出的形状会变形。",
-    controls: "控制", shape: "星体形状", circle: "圆盘", triangle: "三角形", square: "正方形", pentagon: "五边形", star: "五角星", crescent: "月牙（非凸）", hexagon: "六边形", ellipse: "椭圆", egg: "蛋形", rounded: "圆角方形", gear: "齿轮（非凸）", asteroid: "小行星（随机）", navVision: "看星体", navEclipse: "日食与月食", custom: "自定义（点击画布）",
+    controls: "控制", shape: "星体形状", circle: "圆盘", triangle: "三角形", square: "正方形", pentagon: "五边形", star: "五角星", crescent: "月牙（非凸）", hexagon: "六边形", ellipse: "椭圆", egg: "蛋形", rounded: "圆角方形", gear: "齿轮（非凸）", asteroid: "小行星（随机）", navVision: "看星体", navEclipse: "日食与月食", texture: "表面纹路", texNone: "无", texStripes: "条纹", texSpots: "斑点", texContinents: "大陆与海洋", texNoise: "杂色", texBands: "宽窄带", spin: "星体自转", retinaBoth: "两者叠加 + 纹路（生物实际看到的）", custom: "自定义（点击画布）",
     size: "星体大小", orbit: "轨道半径", fov: "视场角", fog: "雾的深度（越小远处越暗）", speed: "自动绕行速度",
     lightOn: "开启光照", assumeDepth: "大脑假设：亮度只来自距离", clearMind: "清空头脑里的图",
     footer: "开源项目 · MIT 许可 · 欢迎加入创作",
@@ -25,7 +25,7 @@ const I18N = {
     retina: "What the creature sees (its retina)", retinaDepth: "Depth only (farther = darker)", retinaLight: "Lighting only (Lambert + shadow)", retinaBoth: "Both combined (what it actually sees)",
     signature: "Signature over one orbit", sigHint: "x: orbital angle of the creature. Yellow: angular width of the planet. White: mean brightness. Each shape has its own fingerprint.",
     mind: "The planet reconstructed in its mind", mindHint: "The creature knows only where it is, which way it looks, and how bright that direction is. It assumes 'darker = farther' and places each point back. With lighting on, that assumption fails and the reconstruction warps.",
-    controls: "Controls", shape: "Planet shape", circle: "Disk", triangle: "Triangle", square: "Square", pentagon: "Pentagon", star: "Star", crescent: "Crescent (non-convex)", hexagon: "Hexagon", ellipse: "Ellipse", egg: "Egg", rounded: "Rounded square", gear: "Gear (non-convex)", asteroid: "Asteroid (random)", navVision: "Seeing a planet", navEclipse: "Eclipses", custom: "Custom (click canvas)",
+    controls: "Controls", shape: "Planet shape", circle: "Disk", triangle: "Triangle", square: "Square", pentagon: "Pentagon", star: "Star", crescent: "Crescent (non-convex)", hexagon: "Hexagon", ellipse: "Ellipse", egg: "Egg", rounded: "Rounded square", gear: "Gear (non-convex)", asteroid: "Asteroid (random)", navVision: "Seeing a planet", navEclipse: "Eclipses", texture: "Surface texture", texNone: "None", texStripes: "Stripes", texSpots: "Spots", texContinents: "Continents and seas", texNoise: "Mottled", texBands: "Bands", spin: "Planet spin", retinaBoth: "Both + texture (what it actually sees)", custom: "Custom (click canvas)",
     size: "Planet size", orbit: "Orbit radius", fov: "Field of view", fog: "Fog depth (smaller = darker far away)", speed: "Auto-walk speed",
     lightOn: "Lighting on", assumeDepth: "Brain assumes: brightness = distance only", clearMind: "Clear mental map",
     footer: "Open source · MIT License · contributions welcome",
@@ -49,7 +49,7 @@ const MD = $("mind"), mdc = MD.getContext("2d");
 // ---------- State ----------
 const state = {
   shape: "circle", size: 100, orbit: 220, fov: 90, fog: 350, speed: 30,
-  lightOn: true, assumeDepth: true,
+  lightOn: true, assumeDepth: true, texture: "continents", spin: 10, rot: 0,
   sun: { x: 110, y: 90 },
   creatureAngle: 0, autoWalk: true,
   custom: [],
@@ -100,7 +100,8 @@ function planetPolygon() {
     case "asteroid": pts = asteroidShape(r); break;
     case "custom": return state.custom.length >= 3 ? state.custom.map(p => [p[0], p[1]]) : [];
   }
-  return pts.map(([x, y]) => [x + c.x, y + c.y]);
+  const cs = Math.cos(state.rot), sn = Math.sin(state.rot);
+  return pts.map(([x, y]) => [x * cs - y * sn + c.x, x * sn + y * cs + c.y]);
 }
 function segments(poly) {
   const s = []; for (let i = 0; i < poly.length; i++) { const a = poly[i], b = poly[(i + 1) % poly.length]; s.push([a, b]); } return s;
@@ -108,11 +109,25 @@ function segments(poly) {
 function raySeg(ox, oy, dx, dy, [[x1, y1], [x2, y2]]) {
   const ex = x2 - x1, ey = y2 - y1; const den = dx * ey - dy * ex; if (Math.abs(den) < 1e-9) return null;
   const t = ((x1 - ox) * ey - (y1 - oy) * ex) / den; const u = ((x1 - ox) * dy - (y1 - oy) * dx) / den;
-  if (t > 1e-6 && u >= 0 && u <= 1) { let nx = ey, ny = -ex; const l = Math.hypot(nx, ny); nx /= l; ny /= l; if (nx * dx + ny * dy > 0) { nx = -nx; ny = -ny; } return { t, nx, ny }; }
+  if (t > 1e-6 && u >= 0 && u <= 1) { let nx = ey, ny = -ex; const l = Math.hypot(nx, ny); nx /= l; ny /= l; if (nx * dx + ny * dy > 0) { nx = -nx; ny = -ny; } return { t, nx, ny, u }; }
   return null;
 }
 function castRay(ox, oy, dx, dy, segs) {
-  let best = null; for (const s of segs) { const h = raySeg(ox, oy, dx, dy, s); if (h && (!best || h.t < best.t)) best = h; } return best;
+  let best = null; segs.forEach((s, i) => { const h = raySeg(ox, oy, dx, dy, s); if (h && (!best || h.t < best.t)) { best = h; best.i = i; } }); return best;
+}
+// ---------- Surface texture: albedo colour as a function of position along the rim (0..1) ----------
+function perimeter(segs) { const cum = [0]; segs.forEach(([a, b]) => cum.push(cum[cum.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1]))); return cum; }
+function rimParam(segs, cum, h) { const i = h.i; const L = cum[cum.length - 1] || 1; return ((cum[i] + h.u * (cum[i + 1] - cum[i])) / L) % 1; }
+function tnoise(u, seed) { let v = 0; for (let k = 1; k <= 4; k++) v += Math.sin(2 * Math.PI * (k * 2 + 1) * u + seed * k * 1.7) / k; return 0.5 + 0.5 * Math.max(-1, Math.min(1, v / 1.6)); }
+function albedo(u) {
+  switch (state.texture) {
+    case "stripes": return (Math.floor(u * 14) % 2) ? [1, 0.95, 0.85] : [0.4, 0.45, 0.6];
+    case "bands": { const n = tnoise(u, 3); return n > 0.55 ? [0.95, 0.9, 0.8] : (n > 0.4 ? [0.7, 0.6, 0.5] : [0.35, 0.4, 0.55]); }
+    case "spots": { const n = tnoise(u * 3, 11); return n > 0.68 ? [0.25, 0.25, 0.3] : [0.9, 0.85, 0.75]; }
+    case "continents": { const n = tnoise(u, 5); return n > 0.52 ? [0.78, 0.66, 0.42] : [0.25, 0.42, 0.8]; }
+    case "noise": { const n = 0.35 + 0.65 * tnoise(u * 5, 23); return [n, n, n]; }
+    default: return [1, 1, 1];
+  }
 }
 // ---------- Creature & light ----------
 function orbitRadius() { return Math.max(state.size + 30, state.orbit); }
@@ -128,7 +143,7 @@ function lit(px, py, nx, ny, segs) {
 
 // ---------- Rendering helpers ----------
 function sampleRetina() {
-  const poly = planetPolygon(); const segs = segments(poly);
+  const poly = planetPolygon(); const segs = segments(poly); const cum = perimeter(segs);
   const cp = creaturePos(); const fov = state.fov * Math.PI / 180;
   const out = [];
   for (let i = 0; i < N_RAYS; i++) {
@@ -138,7 +153,8 @@ function sampleRetina() {
     const depth = Math.exp(-h.t / state.fog);
     const hx = cp.x + dx * h.t, hy = cp.y + dy * h.t;
     const li = state.lightOn ? (0.12 + 0.88 * lit(hx, hy, h.nx, h.ny, segs)) : 1;
-    out.push({ a, dx, dy, t: h.t, depth, light: li, both: depth * li, hx, hy });
+    const alb = albedo(rimParam(segs, cum, h)); const k = depth * li;
+    out.push({ a, dx, dy, t: h.t, depth, light: li, both: k, hx, hy, rgb: [alb[0] * k, alb[1] * k, alb[2] * k] });
   }
   return { out, poly, segs, cp };
 }
@@ -146,7 +162,10 @@ function sampleRetina() {
 function drawRetina(canvas, samples, key) {
   const c = canvas.getContext("2d"); const w = canvas.width, h = canvas.height; c.fillStyle = "#070a14"; c.fillRect(0, 0, w, h);
   const cw = w / samples.length;
-  samples.forEach((s, i) => { if (!s) return; const v = Math.round(255 * Math.min(1, s[key])); c.fillStyle = `rgb(${v},${v},${v})`; c.fillRect(i * cw, 0, Math.ceil(cw), h); });
+  samples.forEach((s, i) => { if (!s) return;
+    if (key === "both") { const [r, g, b] = s.rgb.map(v => Math.round(255 * Math.min(1, v))); c.fillStyle = `rgb(${r},${g},${b})`; }
+    else { const v = Math.round(255 * Math.min(1, s[key])); c.fillStyle = `rgb(${v},${v},${v})`; }
+    c.fillRect(i * cw, 0, Math.ceil(cw), h); });
   c.strokeStyle = "#2a3350"; c.strokeRect(0.5, 0.5, w - 1, h - 1);
 }
 
@@ -171,11 +190,15 @@ function drawWorld(S) {
   if (poly.length) {
     const segs = segments(poly);
     wc.fillStyle = "#1c2438"; wc.beginPath(); poly.forEach(([x, y], i) => i ? wc.lineTo(x, y) : wc.moveTo(x, y)); wc.closePath(); wc.fill();
-    segs.forEach(([[x1, y1], [x2, y2]]) => { let nx = y2 - y1, ny = -(x2 - x1); const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
+    const cum = perimeter(segs); const L = cum[cum.length - 1];
+    segs.forEach(([[x1, y1], [x2, y2]], si) => { let nx = y2 - y1, ny = -(x2 - x1); const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
       // outward normal: polygon orientation check via centroid
       const mx = (x1 + x2) / 2, my = (y1 + y2) / 2; if ((mx - state.center.x) * nx + (my - state.center.y) * ny < 0) { nx = -nx; ny = -ny; }
       const v = state.lightOn ? 0.15 + 0.85 * lit(mx, my, nx, ny, segs) : 0.9;
-      wc.strokeStyle = `rgba(${Math.round(120 + 135 * v)},${Math.round(130 + 120 * v)},${Math.round(160 + 90 * v)},1)`; wc.lineWidth = 4; wc.beginPath(); wc.moveTo(x1, y1); wc.lineTo(x2, y2); wc.stroke(); });
+      const n = Math.max(1, Math.ceil(l / 6)); // subdivide so the texture shows along long edges
+      for (let k = 0; k < n; k++) { const u = (cum[si] + (k + 0.5) / n * l) / L; const alb = albedo(u);
+        wc.strokeStyle = `rgb(${Math.round(255 * alb[0] * (0.25 + 0.75 * v))},${Math.round(255 * alb[1] * (0.25 + 0.75 * v))},${Math.round(255 * alb[2] * (0.25 + 0.75 * v))})`;
+        wc.lineWidth = 5; wc.beginPath(); wc.moveTo(x1 + (x2 - x1) * k / n, y1 + (y2 - y1) * k / n); wc.lineTo(x1 + (x2 - x1) * (k + 1) / n, y1 + (y2 - y1) * (k + 1) / n); wc.stroke(); } });
     wc.lineWidth = 1;
   }
   if (state.shape === "custom") { wc.fillStyle = "#ffd23f"; state.custom.forEach(([x, y]) => { wc.beginPath(); wc.arc(x, y, 3, 0, 7); wc.fill(); }); }
@@ -194,12 +217,13 @@ function updateMind(S) {
   out.forEach((s, i) => { if (!s || i % 2) return;
     // creature's inference: depth from brightness
     const b = state.assumeDepth ? s.both : s.depth; const dEst = -state.fog * Math.log(Math.max(b, 1e-4));
-    const x = cp.x + s.dx * dEst, y = cp.y + s.dy * dEst; state.mind.push({ x, y, b: s.both });
+    const x = cp.x + s.dx * dEst, y = cp.y + s.dy * dEst; state.mind.push({ x, y, b: s.both, rgb: s.rgb });
   });
   if (state.mind.length > 20000) state.mind.splice(0, state.mind.length - 20000);
   const w = MD.width, h = MD.height; mdc.fillStyle = "#070a14"; mdc.fillRect(0, 0, w, h);
   const sc = w / WORLD_W; mdc.save(); mdc.scale(sc, sc);
-  state.mind.forEach(p => { mdc.fillStyle = `rgba(230,233,240,${0.45 + 0.55 * p.b})`; mdc.fillRect(p.x - 1.5, p.y - 1.5, 3, 3); });
+  state.mind.forEach(p => { const m = Math.max(p.rgb[0], p.rgb[1], p.rgb[2]) || 1e-3; const [r, g, b] = p.rgb.map(v => Math.round(255 * Math.min(1, v / m * (0.5 + 0.5 * p.b))));
+    mdc.fillStyle = `rgba(${r},${g},${b},${0.5 + 0.5 * p.b})`; mdc.fillRect(p.x - 1.5, p.y - 1.5, 3, 3); });
   mdc.fillStyle = "#3cff7a"; mdc.beginPath(); mdc.arc(cp.x, cp.y, 5, 0, 7); mdc.fill();
   mdc.restore();
 }
@@ -225,6 +249,7 @@ let last = performance.now();
 function frame(now) {
   const dt = Math.min((now - last) / 1000, 0.05); last = now; // clamp so a hidden tab does not jump
   if (state.autoWalk) state.creatureAngle += dt * state.speed / 100 * 1.2;
+  state.rot += dt * state.spin * Math.PI / 180;
   const S = sampleRetina();
   drawWorld(S); drawRetina(RD, S.out, "depth"); drawRetina(RL, S.out, "light"); drawRetina(RB, S.out, "both");
   updateMind(S); updateSignature(S);
@@ -232,8 +257,8 @@ function frame(now) {
 }
 
 // ---------- UI wiring ----------
-const bind = (id, key, f = v => +v) => { const el = $(id); el.addEventListener("input", () => { state[key] = f(el.value); if (["shape", "size", "orbit", "fog"].includes(id)) resetMind(); }); };
-bind("shape", "shape", v => { if (v === "asteroid") asteroidSeed = (asteroidSeed * 7 + 3) % 1000 + 1; return v; }); bind("size", "size"); bind("orbit", "orbit"); bind("fov", "fov"); bind("fog", "fog"); bind("speed", "speed");
+const bind = (id, key, f = v => +v) => { const el = $(id); el.addEventListener("input", () => { state[key] = f(el.value); if (["shape", "size", "orbit", "fog", "texture"].includes(id)) resetMind(); }); };
+bind("shape", "shape", v => { if (v === "asteroid") asteroidSeed = (asteroidSeed * 7 + 3) % 1000 + 1; return v; }); bind("size", "size"); bind("orbit", "orbit"); bind("fov", "fov"); bind("fog", "fog"); bind("speed", "speed"); bind("spin", "spin"); bind("texture", "texture", v => v);
 $("lightOn").addEventListener("change", e => { state.lightOn = e.target.checked; resetMind(); });
 $("assumeDepth").addEventListener("change", e => { state.assumeDepth = e.target.checked; resetMind(); });
 $("clearMind").addEventListener("click", resetMind);
